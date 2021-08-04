@@ -3,7 +3,7 @@
  * @Author: Creling
  * @Date: 2021-08-03 10:04:10
  * @LastEditors: Creling
- * @LastEditTime: 2021-08-04 16:00:44
+ * @LastEditTime: 2021-08-04 17:10:46
  * @Description: file content
  */
 import {
@@ -191,16 +191,19 @@ export default class ActivityLogger extends Plugin {
    */
   dealWithTemplates(template: string, type: string): string {
     const filePaths = this.data[type]
-    if (filePaths.length) {
-      const fileCount = filePaths.length
       const filenamePlaceHolderRegex = this.regexs[type]
       const result = filenamePlaceHolderRegex.exec(template)
       if (result) {
         const filenamePlaceHolder = result[0]
+      if (filePaths.length) {
+        const fileCount = filePaths.length
         template = template.replace(filenamePlaceHolder, filenamePlaceHolder.repeat(fileCount))
         for (const filePath of filePaths) {
           template = template.replace(`$${type}`, filePath)
         }
+      }
+      else {
+        template = template.replace(filenamePlaceHolder, "\n")
       }
     }
     return template
