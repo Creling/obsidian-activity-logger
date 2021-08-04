@@ -22,7 +22,19 @@ interface ActivityLoggerSettings {
 }
 
 const DEFAULT_SETTINGS: ActivityLoggerSettings = {
-  template: "CreatedFiles\n[[$createdFiles]]\nDeletedFiles[[$deletedFiles]]\nModifiedFiles[[$modifiedFiles]]",
+  template: `CreatedFiles
+
+- [[$createdFiles]]
+
+DeletedFiles
+
+- [[$deletedFiles]]
+
+ModifiedFiles
+
+- [[$modifiedFiles]]
+
+`,
   startLine: "--start--",
   endLine: "--end--",
 };
@@ -164,7 +176,8 @@ export default class ActivityLogger extends Plugin {
     console.log(insertLoc)
     if (insertLoc["begin"]["line"] == -1 || insertLoc["end"]["line"] == -1) {
       const curLoc = editor.getCursor()
-      editor.replaceRange(template, curLoc, curLoc)
+      const text = "{0}\n{1}\n{2}".format(this.settings.startLine, template, this.settings.endLine)
+      editor.replaceRange(text, curLoc, curLoc)
     }
     else {
       editor.replaceRange(template, insertLoc["begin"], insertLoc["end"])
