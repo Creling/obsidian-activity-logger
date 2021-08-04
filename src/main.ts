@@ -78,17 +78,23 @@ export default class ActivityLogger extends Plugin {
       }
     })
 
-    this.registerEvent(this.app.vault.on('delete', params => {
-      this.saveItem(params.path, "deletedFiles")
-    }));
+    this.app.workspace.onLayoutReady(() => {
 
     this.registerEvent(this.app.vault.on('modify', params => {
       this.saveItem(params.path, "modifiedFiles")
     }));
 
+      this.registerEvent(this.app.vault.on('delete', params => {
+        this.saveItem(params.path, "deletedFiles")
+      }));
+
     this.registerEvent(this.app.vault.on('create', (params) => {
+        console.log("create", params.path)
       this.saveItem(params.path, "createdFiles")
     }));
+
+    })
+
   }
 
   saveItem(path: string, type: string) {
