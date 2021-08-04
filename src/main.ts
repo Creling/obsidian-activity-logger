@@ -92,18 +92,18 @@ export default class ActivityLogger extends Plugin {
 
     this.app.workspace.onLayoutReady(() => {
 
-    this.registerEvent(this.app.vault.on('modify', params => {
-      this.saveItem(params.path, "modifiedFiles")
-    }));
+      this.registerEvent(this.app.vault.on('modify', params => {
+        this.saveItem(params.path, "modifiedFiles")
+      }));
 
       this.registerEvent(this.app.vault.on('delete', params => {
         this.saveItem(params.path, "deletedFiles")
       }));
 
-    this.registerEvent(this.app.vault.on('create', (params) => {
+      this.registerEvent(this.app.vault.on('create', (params) => {
         console.log("create", params.path)
-      this.saveItem(params.path, "createdFiles")
-    }));
+        this.saveItem(params.path, "createdFiles")
+      }));
 
     })
 
@@ -191,10 +191,10 @@ export default class ActivityLogger extends Plugin {
    */
   dealWithTemplates(template: string, type: string): string {
     const filePaths = this.data[type]
-      const filenamePlaceHolderRegex = this.regexs[type]
-      const result = filenamePlaceHolderRegex.exec(template)
-      if (result) {
-        const filenamePlaceHolder = result[0]
+    const filenamePlaceHolderRegex = this.regexs[type]
+    const result = filenamePlaceHolderRegex.exec(template)
+    if (result) {
+      const filenamePlaceHolder = result[0]
       if (filePaths.length) {
         const fileCount = filePaths.length
         template = template.replace(filenamePlaceHolder, filenamePlaceHolder.repeat(fileCount))
