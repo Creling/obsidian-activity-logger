@@ -3,7 +3,7 @@
  * @Author: Creling
  * @Date: 2021-08-03 10:04:10
  * @LastEditors: Creling
- * @LastEditTime: 2021-08-04 17:10:46
+ * @LastEditTime: 2021-08-05 18:20:32
  * @Description: file content
  */
 import {
@@ -61,7 +61,7 @@ export default class ActivityLogger extends Plugin {
     console.log("loading plugin");
     await this.loadSettings();
 
-    this.data = JSON.parse(window.localStorage.getItem("ActivityLogger"))
+    this.data = JSON.parse(window.localStorage.getItem(`ActivityLogger-${this.app.vault.getName()}`))
     const temp = this.getDate()
     if (!this.data || this.data.date[0] != temp) {
       this.data = {
@@ -93,25 +93,24 @@ export default class ActivityLogger extends Plugin {
     this.app.workspace.onLayoutReady(() => {
 
       this.registerEvent(this.app.vault.on('modify', params => {
-        this.saveItem(params.path, "modifiedFiles")
+        this.saveLogs(params.path, "modifiedFiles")
       }));
 
       this.registerEvent(this.app.vault.on('delete', params => {
-        this.saveItem(params.path, "deletedFiles")
+        this.saveLogs(params.path, "deletedFiles")
       }));
 
       this.registerEvent(this.app.vault.on('create', (params) => {
         console.log("create", params.path)
-        this.saveItem(params.path, "createdFiles")
+        this.saveLogs(params.path, "createdFiles")
       }));
 
     })
-
   }
 
-  saveItem(path: string, type: string) {
+  saveLogs(path: string, type: string) {
     const temp = this.getDate();
-
+    
     if (temp == this.data.date[0]) {
       if (this.data[type].indexOf(path) == -1) {
         this.data[type].push(path)
@@ -125,7 +124,7 @@ export default class ActivityLogger extends Plugin {
       this.data[type].push(path)
     }
 
-    window.localStorage.setItem("ActivityLogger", JSON.stringify(this.data))
+    window.localStorage.setItem(`ActivityLogger-${this.app.vault.getName()}`, JSON.stringify(this.data))
   }
 
   /**
